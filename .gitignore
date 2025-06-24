@@ -1,0 +1,130 @@
+# -----------------------
+# General
+# -----------------------
+*.log
+*.pyc
+*.swp
+*.class
+.DS_Store
+.packages
+.atom/
+.history
+.svn/
+build/
+coverage/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-dependencies
+.melos_tool/
+.migrate_working_dir/
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+
+# -----------------------
+# IDEs
+# -----------------------
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code (optional)
+#.vscode/
+
+# -----------------------
+# Dart / Flutter
+# -----------------------
+.dart_tool/
+.pub/
+.pub-cache/
+.pub-preload-cache/
+.packages.generated
+**/doc/api/
+**/generated_plugin_registrant.dart
+
+# Flutter symbols / obfuscation
+app.*.symbols
+app.*.map.json
+flutter_*.png
+
+# -----------------------
+# Android
+# -----------------------
+.gradle/
+**/android/local.properties
+**/android/key.properties
+**/android/**/gradle-wrapper.jar
+**/android/gradlew
+**/android/gradlew.bat
+**/android/**/GeneratedPluginRegistrant.java
+**/android/**/captures/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# -----------------------
+# iOS / macOS
+# -----------------------
+**/ios/.generated/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.zip
+**/ios/Flutter/app.flx
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Flutter.podspec
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Xcode project files
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+
+# macOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/ephemeral/
+**/Pods/
+**/xcuserdata/
+
+# -----------------------
+# Windows
+# -----------------------
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
+
+# -----------------------
+# Linux
+# -----------------------
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/generated_plugins.cmake
+
+# -----------------------
+# Exceptions
+# -----------------------
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
+!/dev/ci/**/Gemfile.lock
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
