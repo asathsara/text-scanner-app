@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:text_extractor_app/screens/history_screen.dart';
 import 'package:text_extractor_app/screens/image_text_screen.dart';
 import 'package:text_extractor_app/screens/text_editor_screen.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -38,9 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) => navigateToPage(index),
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.grey.withValues(alpha: 0.2),
-        elevation: 11,
         selectedIndex: _currentPage,
         destinations: [
           NavigationDestination(

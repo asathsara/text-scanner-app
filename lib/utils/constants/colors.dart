@@ -5,6 +5,9 @@ class MyColors {
 
   static const Color primaryColor = Color(0xFF0099FF);
   static const Color secondaryColor = Color(0xFF32CCFF);
+
+  static const Color lightBlack = Color(0xFF121212);
+  static const Color lightWhite = Color(0xFFf8f9ff);
   
   static const Color lightPurple = Color(0xFFBB86FC);
   static const Color mediumPurple = Color(0xFF9D54F5);
@@ -53,7 +56,6 @@ class MyColors {
 
   static const Color mediumGray = Color(0xFF676767);
   static const Color silver = Color(0xFFC0C0C0);
-  static const Color charcoal = Color(0xFF121212);
   static const Color backgroundGray = Color(0xFFF5F8F9);
   static const Color iconGray = Color(0xFFB7B7B7);
   static const Color darkNavy = Color(0xFF17262A);
@@ -61,7 +63,7 @@ class MyColors {
   static const Color lightGray = Color(0xFFB8B8B8);
   static const Color textBlue = Color(0xFF333A41);
   static const Color cardBackground = Color(0xFFF9F9F9);
-  static Color systemText = Colors.black.withOpacity(0.72);
+  static Color systemText = Colors.black.withValues(alpha: 0.72);
   static Color counterBlue = Color(0xFF32374B);
   static Color cardGray = Color(0xFFF3F3F3);
 }

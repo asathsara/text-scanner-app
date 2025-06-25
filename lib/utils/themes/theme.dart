@@ -1,8 +1,8 @@
-// lib/themes.dart
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:text_extractor_app/utils/constants/colors.dart';
+import 'package:text_extractor_app/utils/themes/button_theme.dart';
+import 'package:text_extractor_app/utils/themes/navigation_theme.dart';
 
 class AppThemes {
   AppThemes._(); // private constructor
@@ -13,6 +13,8 @@ class AppThemes {
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.light),
     textTheme: GoogleFonts.lexendTextTheme(),
+    navigationBarTheme: AppNavigationThemes.light,
+    filledButtonTheme:  AppButtonThemes.lightFilled
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -20,5 +22,7 @@ class AppThemes {
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.dark),
     textTheme: GoogleFonts.lexendTextTheme(),
+    navigationBarTheme: AppNavigationThemes.dark,
+    filledButtonTheme:  AppButtonThemes.darkFilled
   );
 }
