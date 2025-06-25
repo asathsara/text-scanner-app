@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:text_extractor_app/home_screen.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
+import 'package:text_extractor_app/utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,18 +18,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Firebase App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Firebase Initialization Example'),
-        ),
-        body: const Center(
-          child: Text('Firebase is initialized!'),
-        ),
-      ),
+      title: 'Image to Text App',
+      theme: AppThemes.lightTheme,
+      darkTheme: AppThemes.darkTheme,
+      themeMode: ThemeMode.system,
+      home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
