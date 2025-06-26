@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class NoteCounterCard extends StatelessWidget {
   final String label;
@@ -19,7 +20,7 @@ class NoteCounterCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
-              : Colors.black,
+              : MyColors.skyBlue,
         ),
         child: Column(
           children: [

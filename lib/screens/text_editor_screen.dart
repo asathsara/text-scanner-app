@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:text_extractor_app/components/note_action_button.dart';
 import 'package:text_extractor_app/components/note_counter_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class TextEditorScreen extends StatefulWidget {
   const TextEditorScreen({super.key});
@@ -78,7 +79,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: isDark ? Colors.grey[800] : MyColors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -113,6 +114,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 onChanged: _updateCounts,
                 maxLines: null,
                 expands: true,
+                textAlignVertical: TextAlignVertical.top, // Add this line
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: "Enter your note here…",
@@ -127,8 +129,9 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.list),
+        shape: const CircleBorder(),
+        backgroundColor: MyColors.skyBlue,
+        child: const Icon(Icons.share, color: Colors.white),
         onPressed: () {
           // TODO: Implement your functionality
         },

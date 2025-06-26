@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class NoteActionButton extends StatelessWidget {
   final IconData icon;
@@ -14,15 +15,17 @@ class NoteActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, color: Colors.white),
+          Icon(icon, color: isDark ? MyColors.white : MyColors.mediumGray),
           const SizedBox(height: 4),
           Text(
             label,
-            style:  TextStyle(color: Colors.white),
+            style:  TextStyle(color: isDark ? MyColors.white : MyColors.mediumGray),
           ),
         ],
       ),
