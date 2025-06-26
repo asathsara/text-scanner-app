@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for Image Picker to access storage -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- Required for Image Picker to access camera (if you plan to use ImageSource.camera) -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
         android:label="text_extractor_app"
         android:name="${applicationName}"

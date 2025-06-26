@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
 
 class ImageTextScreen extends StatefulWidget {
@@ -9,7 +13,59 @@ class ImageTextScreen extends StatefulWidget {
 }
 
 class _ImageTextScreenState extends State<ImageTextScreen> {
-  String extractedText = '';
+  XFile? _imageFile;
+  final TextRecognizer _textRecognizer = TextRecognizer();
+  final TextEditingController _textController = TextEditingController();
+  bool _isProcessing = false;
+
+  @override
+  void dispose() {
+    _textRecognizer.close();
+    _textController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = pickedFile;
+          _textController.clear(); // Clear previous results
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick image: $e')),
+      );
+    }
+  }
+
+  Future<void> _extractText() async {
+    if (_imageFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select an image first.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final inputImage = InputImage.fromFilePath(_imageFile!.path);
+      final RecognizedText recognizedText =
+          await _textRecognizer.processImage(inputImage);
+      _textController.text = recognizedText.text;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to extract text: $e')),
+      );
+    }
+    setState(() => _isProcessing = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,36 +75,55 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 32),
-            StrokeText(text: "Image to Text"),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
+            const StrokeText(text: "Image to Text"),
+            const SizedBox(height: 32),
             // Image Upload Box
             GestureDetector(
-              onTap: () {
-                // TODO: Implement image picker
-              },
+              onTap: _pickImage,
               child: Container(
                 height: 180,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey[100],
+                  color: Colors.grey[200],
                 ),
-                child: const Center(child: Text("Tap to upload image")),
+                child: _imageFile != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(11),
+                        child: Image.file(
+                          File(_imageFile!.path),
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_photo_alternate_outlined,
+                                size: 40, color: Colors.grey),
+                            SizedBox(height: 8),
+                            Text("Tap to upload image"),
+                          ],
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 50,
               child: FilledButton(
-                onPressed: () {
-                  // TODO: Implement text extraction
-                  setState(() {
-                    extractedText = "Example extracted text goes here...";
-                  });
-                },
-                child: const Text("Extract Text"),
+                onPressed:
+                    _isProcessing || _imageFile == null ? null : _extractText,
+                child: _isProcessing
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(color: Colors.white),
+                      )
+                    : const Text("Extract Text"),
               ),
             ),
             const SizedBox(height: 24),
@@ -56,10 +131,11 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
             // Extracted Text Display
             Expanded(
               child: TextFormField(
+                controller: _textController,
                 maxLines: null,
-                readOnly: true,
-                initialValue: extractedText,
-                decoration: InputDecoration(
+                expands: true,
+                textAlignVertical: TextAlignVertical.top,
+                decoration: const InputDecoration(
                   labelText: "Extracted Text",
                   border: OutlineInputBorder(),
                 ),

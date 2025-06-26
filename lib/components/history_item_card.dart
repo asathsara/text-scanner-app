@@ -28,7 +28,7 @@ class HistoryItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Title at the top
+          
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -39,16 +39,14 @@ class HistoryItemCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // 2. Content next
           Text(
             content.trim().split('\n').take(2).join('\n'),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium,
           ),
-          const SizedBox(height: 12), // Space between content and date
+          const SizedBox(height: 12), 
 
-          // 3. Date last, aligned to the right
           Align(
             alignment: Alignment.centerRight,
             child: Text(
