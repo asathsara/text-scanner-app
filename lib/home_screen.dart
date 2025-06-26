@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:text_extractor_app/screens/history_screen.dart';
 import 'package:text_extractor_app/screens/image_text_screen.dart';
 import 'package:text_extractor_app/screens/text_editor_screen.dart';
-import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -19,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void navigateToPage(int page) {
     if (page >= 0 && page < 3) {
       setState(() {
-        _currentPage = page; 
+        _currentPage = page;
       });
       _pageController.jumpToPage(page);
     }
@@ -31,11 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
-        children: [
-          ImageTextScreen(),
-          HistoryScreen(),
-          TextEditorScreen()
-        ],
+        children: [ImageTextScreen(), HistoryScreen(), TextEditorScreen()],
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) => navigateToPage(index),
@@ -45,14 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.image),
             label: 'Image to Text',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.edit),
-            label: 'Text Editor',
-          ),
+          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.edit), label: 'Text Editor'),
         ],
       ),
     );
