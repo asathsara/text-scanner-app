@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:text_extractor_app/components/note_action_button.dart';
 import 'package:text_extractor_app/components/note_counter_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/providers/note_provider.dart';
 import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class TextEditorScreen extends StatefulWidget {
@@ -43,6 +45,15 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       _noteController.text += data.text!;
       _updateCounts(_noteController.text);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final noteProvider = Provider.of<NoteProvider>(context);
+    _titleController.text = noteProvider.title;
+    _noteController.text = noteProvider.content;
+    _updateCounts(noteProvider.content);
   }
 
   @override

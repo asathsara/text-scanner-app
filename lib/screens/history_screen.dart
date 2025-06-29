@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:text_extractor_app/components/history_item_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/home_screen.dart';
+import 'package:text_extractor_app/providers/note_provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -45,10 +48,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     itemBuilder: (context, index) {
                       final data = docs[index].data() as Map<String, dynamic>;
 
-                      return HistoryItemCard(
-                        title: data['title'] ?? 'No Title',
-                        content: data['text'] ?? '',
-                        date: _parseDate(data['date']),
+                      return GestureDetector(
+                        onTap: () {
+                          Provider.of<NoteProvider>(
+                            context,
+                            listen: false,
+                          ).setNote(data['title'], data['text']);
+
+                          // Switch to Text Editor tab (index 2)
+                          final homePageState = context
+                              .findAncestorStateOfType<MyHomePageState>();
+                          homePageState?.navigateToPage(2);
+                        },
+                        child: HistoryItemCard(
+                          title: data['title'] ?? 'No Title',
+                          content: data['text'] ?? '',
+                          date: _parseDate(data['date']),
+                        ),
                       );
                     },
                   );
