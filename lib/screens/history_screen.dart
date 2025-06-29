@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:text_extractor_app/components/history_item_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
 
@@ -7,29 +9,9 @@ class HistoryScreen extends StatefulWidget {
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
-
-  
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  final List<Map<String, dynamic>> historyItems = [
-    {
-      'title': 'Meeting Notes',
-      'content': 'Discussed quarterly revenue and marketing strategy.\nNext meeting is scheduled next week.',
-      'date': DateTime.now().subtract(const Duration(hours: 3)),
-    },
-    {
-      'title': 'Shopping List',
-      'content': 'Milk, Bread, Eggs, Coffee, Orange Juice.\nPick up before 6 PM.',
-      'date': DateTime.now().subtract(const Duration(days: 1)),
-    },
-    {
-      'title': 'Daily Journal',
-      'content': 'Today I started building a Flutter app for OCR...\nI learned about using the Google Fonts package.',
-      'date': DateTime.now().subtract(const Duration(days: 2)),
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,14 +24,33 @@ class _HistoryScreenState extends State<HistoryScreen> {
             const StrokeText(text: "History"),
             const SizedBox(height: 24),
             Expanded(
-              child: ListView.builder(
-                itemCount: historyItems.length,
-                itemBuilder: (context, index) {
-                  final item = historyItems[index];
-                  return HistoryItemCard(
-                    title: item['title'],
-                    content: item['content'],
-                    date: item['date'],
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('extracted_texts')
+                    .orderBy('date', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text("No history yet."));
+                  }
+
+                  final docs = snapshot.data!.docs;
+
+                  return ListView.builder(
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      final data = docs[index].data() as Map<String, dynamic>;
+
+                      return HistoryItemCard(
+                        title: data['title'] ?? 'No Title',
+                        content: data['text'] ?? '',
+                        date: _parseDate(data['date']),
+                      );
+                    },
                   );
                 },
               ),
@@ -58,5 +59,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
     );
+  }
+
+  // Convert string date to DateTime
+  DateTime _parseDate(String dateStr) {
+    try {
+      return DateFormat('yyyy-MM-dd HH:mm').parse(dateStr);
+    } catch (e) {
+      return DateTime.now();
+    }
   }
 }
