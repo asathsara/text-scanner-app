@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
 
 class ImageTextScreen extends StatefulWidget {
@@ -27,8 +29,9 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
 
   Future<void> _pickImage() async {
     try {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
+      final pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
       if (pickedFile != null) {
         setState(() {
           _imageFile = pickedFile;
@@ -36,9 +39,9 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to pick image: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to pick image: $e')));
     }
   }
 
@@ -56,15 +59,46 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
 
     try {
       final inputImage = InputImage.fromFilePath(_imageFile!.path);
-      final RecognizedText recognizedText =
-          await _textRecognizer.processImage(inputImage);
-      _textController.text = recognizedText.text;
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to extract text: $e')),
+      final RecognizedText recognizedText = await _textRecognizer.processImage(
+        inputImage,
       );
+
+      final extractedText = recognizedText.text;
+      _textController.text = extractedText;
+
+      if (extractedText.trim().isNotEmpty) {
+        await _saveToFirebase(extractedText);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to extract text: $e')));
     }
+
     setState(() => _isProcessing = false);
+  }
+
+  Future<void> _saveToFirebase(String text) async {
+    final now = DateTime.now();
+    final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(now);
+    final words = text.split(RegExp(r'\s+'));
+    final title = words.take(3).join(' '); // First 3 words as title
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('extracted_texts')
+          .add({'title': title, 'date': formattedDate, 'text': text});
+
+      print('Saved to Firebase with ID: ${doc.id}');
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Saved to Firebase")));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to save: $e")));
+    }
   }
 
   @override
@@ -101,8 +135,11 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add_photo_alternate_outlined,
-                                size: 40, color: Colors.grey),
+                            Icon(
+                              Icons.add_photo_alternate_outlined,
+                              size: 40,
+                              color: Colors.grey,
+                            ),
                             SizedBox(height: 8),
                             Text("Tap to upload image"),
                           ],
@@ -115,8 +152,9 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
               width: double.infinity,
               height: 50,
               child: FilledButton(
-                onPressed:
-                    _isProcessing || _imageFile == null ? null : _extractText,
+                onPressed: _isProcessing || _imageFile == null
+                    ? null
+                    : _extractText,
                 child: _isProcessing
                     ? const SizedBox(
                         height: 24,

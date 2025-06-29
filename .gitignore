@@ -160,3 +160,4 @@ yarn-error.log*
 /.env.*
 
 google-services.json
+lib/firebase_options.dart

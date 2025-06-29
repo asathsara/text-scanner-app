@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:text_extractor_app/firebase_options.dart';
 import 'package:text_extractor_app/home_screen.dart';
 import 'package:text_extractor_app/utils/themes/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase here
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
 
   runApp(const MyApp());
 }
