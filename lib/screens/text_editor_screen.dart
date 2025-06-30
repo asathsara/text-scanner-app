@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:text_extractor_app/components/note_action_button.dart';
 import 'package:text_extractor_app/components/note_counter_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
@@ -54,6 +55,33 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
     _titleController.text = noteProvider.title;
     _noteController.text = noteProvider.content;
     _updateCounts(noteProvider.content);
+  }
+
+  void _shareNote() async {
+    final title = _titleController.text.trim();
+    final content = _noteController.text.trim();
+    final contentToShare = '$title\n\n$content';
+
+    if (contentToShare.isNotEmpty) {
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          text: contentToShare,
+          subject: title.isEmpty ? null : title,
+        ),
+      );
+
+      if (result.status == ShareResultStatus.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Shared successfully!")));
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Nothing to share")));
+    }
   }
 
   @override
@@ -142,10 +170,8 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         backgroundColor: MyColors.skyBlue,
+        onPressed: _shareNote,
         child: const Icon(Icons.share, color: Colors.white),
-        onPressed: () {
-          // TODO: Implement your functionality
-        },
       ),
     );
   }

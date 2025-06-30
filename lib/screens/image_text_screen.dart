@@ -39,9 +39,11 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to pick image: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to pick image: $e')));
+      }
     }
   }
 
@@ -70,9 +72,11 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
         await _saveToFirebase(extractedText);
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to extract text: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to extract text: $e')));
+      }
     }
 
     setState(() => _isProcessing = false);
@@ -85,19 +89,23 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
     final title = words.take(3).join(' '); // First 3 words as title
 
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('extracted_texts')
-          .add({'title': title, 'date': formattedDate, 'text': text});
+      await FirebaseFirestore.instance.collection('extracted_texts').add({
+        'title': title,
+        'date': formattedDate,
+        'text': text,
+      });
 
-      print('Saved to Firebase with ID: ${doc.id}');
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Saved to Firebase")));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Saved to Firebase")));
+      }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Failed to save: $e")));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to save: $e")));
+      }
     }
   }
 

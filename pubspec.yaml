@@ -41,6 +41,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.15.0
   cloud_firestore: ^5.6.9
   provider: ^6.1.5
+  share_plus: ^11.0.0
 
 dev_dependencies:
   flutter_test:
