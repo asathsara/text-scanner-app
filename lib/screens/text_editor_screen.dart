@@ -169,9 +169,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : MyColors.lightBlack,
+        backgroundColor: MyColors.cyanBlue,
         onPressed: _shareNote,
         child: const Icon(Icons.share, color: Colors.white),
       ),

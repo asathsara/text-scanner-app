@@ -18,9 +18,7 @@ class NoteCounterCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey[800]
-              : MyColors.lightBlack,
+          gradient: MyColors.blueGradient
         ),
         child: Column(
           children: [

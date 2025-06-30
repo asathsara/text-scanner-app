@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:text_extractor_app/firebase_options.dart';
 import 'package:text_extractor_app/home_screen.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
+import 'package:text_extractor_app/providers/theme_provider.dart';
 import 'package:text_extractor_app/utils/themes/theme.dart';
 
 void main() async {
@@ -13,7 +14,11 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => NoteProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => NoteProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), // Add this line
+      ],
+
       child: const MyApp(),
     ),
   );
@@ -24,11 +29,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       title: 'Image to Text App',
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeProvider.currentThemeMode,
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );

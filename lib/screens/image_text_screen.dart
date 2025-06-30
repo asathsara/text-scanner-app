@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/providers/theme_provider.dart';
 
 class ImageTextScreen extends StatefulWidget {
   const ImageTextScreen({super.key});
@@ -118,7 +120,16 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            const StrokeText(text: "Image to Text"),
+            GestureDetector(
+              onTap: () {
+                Provider.of<ThemeProvider>(
+                  context,
+                  listen: false,
+                ).toggleTheme();
+              },
+              child: const StrokeText(text: "Image to Text"),
+            ),
+
             const SizedBox(height: 32),
             // Image Upload Box
             GestureDetector(
@@ -180,7 +191,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
                 controller: _textController,
                 maxLines: null,
                 expands: true,
-                textAlignVertical: TextAlignVertical.top, 
+                textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
                   hintText: "Extracted Text",
                   border: OutlineInputBorder(

@@ -66,4 +66,14 @@ class MyColors {
   static Color systemText = Colors.black.withValues(alpha: 0.72);
   static Color counterBlue = Color(0xFF32374B);
   static Color cardGray = Color(0xFFF3F3F3);
+
+  static const LinearGradient blueGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      brightBlue, // Start color
+      skyBlue, // End color
+    ],
+  );
+
 }

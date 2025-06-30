@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class HistoryItemCard extends StatelessWidget {
   final String title;
