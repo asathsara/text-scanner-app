@@ -176,14 +176,16 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
 
             // Extracted Text Display
             Expanded(
-              child: TextFormField(
+              child: TextField(
                 controller: _textController,
                 maxLines: null,
                 expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: const InputDecoration(
-                  labelText: "Extracted Text",
-                  border: OutlineInputBorder(),
+                textAlignVertical: TextAlignVertical.top, 
+                decoration: InputDecoration(
+                  hintText: "Extracted Text",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),

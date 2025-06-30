@@ -4,31 +4,25 @@ import 'package:text_extractor_app/utils/constants/colors.dart';
 class AppNavigationThemes {
   static NavigationBarThemeData light = NavigationBarThemeData(
     backgroundColor: MyColors.lightWhite,
-    indicatorColor: MyColors.brightBlue,
+    indicatorColor: MyColors.textBlue,
 
     labelTextStyle: WidgetStateProperty.all(
-      const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w500,
-      ),
+      const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
     ),
     iconTheme: WidgetStateProperty.all(
-      const IconThemeData(color: MyColors.darkNavy),
+      const IconThemeData(color: MyColors.white),
     ),
   );
 
   static NavigationBarThemeData dark = NavigationBarThemeData(
     backgroundColor: MyColors.lightBlack,
-    indicatorColor: MyColors.brightBlue,
+    indicatorColor: MyColors.backgroundGray,
     elevation: 8,
     labelTextStyle: WidgetStateProperty.all(
-      const TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w500,
-      ),
+      const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
     ),
     iconTheme: WidgetStateProperty.all(
-      const IconThemeData(color: Colors.white),
+      const IconThemeData(color: MyColors.mediumGray),
     ),
   );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class HistoryItemCard extends StatelessWidget {
   final String title;
@@ -28,11 +29,11 @@ class HistoryItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
+              color: Colors.grey[600],
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -43,15 +44,20 @@ class HistoryItemCard extends StatelessWidget {
             content.trim().split('\n').take(2).join('\n'),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.grey[600],
+            ),
+            
           ),
-          const SizedBox(height: 12), 
+          const SizedBox(height: 12),
 
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               DateFormat.yMMMd().add_jm().format(date),
-              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.grey[600],
+              ),
             ),
           ),
         ],

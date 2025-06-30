@@ -153,7 +153,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 onChanged: _updateCounts,
                 maxLines: null,
                 expands: true,
-                textAlignVertical: TextAlignVertical.top, // Add this line
+                textAlignVertical: TextAlignVertical.top, 
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: "Enter your note here…",
@@ -169,7 +169,9 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        backgroundColor: MyColors.skyBlue,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[800]
+            : MyColors.lightBlack,
         onPressed: _shareNote,
         child: const Icon(Icons.share, color: Colors.white),
       ),

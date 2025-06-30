@@ -20,7 +20,7 @@ class NoteCounterCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
-              : MyColors.skyBlue,
+              : MyColors.lightBlack,
         ),
         child: Column(
           children: [
