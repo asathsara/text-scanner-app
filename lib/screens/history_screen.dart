@@ -14,6 +14,39 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
+void _confirmAndDelete(BuildContext context, String docId) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Delete this note?'),
+      content: const Text('This action cannot be undone.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(false),
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          child: Text('Delete'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    FirebaseFirestore.instance
+        .collection('extracted_texts')
+        .doc(docId)
+        .delete();
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Note deleted')));
+    }
+  }
+}
+
 class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
@@ -60,6 +93,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               .findAncestorStateOfType<MyHomePageState>();
                           homePageState?.navigateToPage(2);
                         },
+                        onLongPress: () =>
+                            _confirmAndDelete(context, docs[index].id),
                         child: HistoryItemCard(
                           title: data['title'] ?? 'No Title',
                           content: data['text'] ?? '',
