@@ -163,3 +163,4 @@ google-services.json
 lib/firebase_options.dart
 
 local.properties
+.vscode
