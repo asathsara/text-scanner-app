@@ -2,10 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:text_extractor_app/components/stroke_text.dart';
 import 'package:text_extractor_app/controllers/image_text_controller.dart';
-import 'package:text_extractor_app/providers/theme_provider.dart';
 import 'package:text_extractor_app/services/firebase_service.dart';
 import 'package:text_extractor_app/services/text_recognition_service.dart';
 
@@ -108,46 +105,25 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Image to Text' , style: TextStyle(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/settings');
+            },
+            tooltip: "Settings",
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const SizedBox(height: 32),
-                GestureDetector(
-                  onTap: () {
-                    Provider.of<ThemeProvider>(
-                      context,
-                      listen: false,
-                    ).toggleTheme();
-                  },
-                  child: const StrokeText(text: "Image to Text"),
-                ),
-
-                const SizedBox(height: 32),
-                // Settings Card with Icon
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    color: Theme.of(context).colorScheme.surface,
-                    child: IconButton(
-                      icon: const Icon(Icons.settings, size: 28),
-                      color: Theme.of(context).colorScheme.primary,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/settings');
-                      },
-                      tooltip: "Settings",
-                    ),
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 16),
             // Image Upload Box
             GestureDetector(

@@ -4,11 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:text_extractor_app/components/history_item_card.dart';
-import 'package:text_extractor_app/components/stroke_text.dart';
 import 'package:text_extractor_app/controllers/history_controller.dart';
 import 'package:text_extractor_app/home_screen.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
-
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -49,9 +47,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       final success = await _controller.deleteHistoryItem(docId);
       if (success) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Note deleted')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Note deleted')));
         }
       } else {
         if (context.mounted) {
@@ -73,7 +71,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     // get the history stream from the controller
     final stream = _controller.getHistoryStream();
 
@@ -82,14 +79,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text(
+          'History',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        )
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            const StrokeText(text: "History"),
-            const SizedBox(height: 24),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: stream,
@@ -118,12 +121,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             listen: false,
                           ).setNote(data['title'], data['text']);
 
-                          final homePageState =
-                              context.findAncestorStateOfType<MyHomePageState>();
+                          final homePageState = context
+                              .findAncestorStateOfType<MyHomePageState>();
                           homePageState?.navigateToPage(2);
                         },
                         onLongPress: () =>
-                            _confirmAndDelete(context, docs[index].id), 
+                            _confirmAndDelete(context, docs[index].id),
                         child: HistoryItemCard(
                           title: data['title'] ?? 'No Title',
                           content: data['text'] ?? '',
