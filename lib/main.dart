@@ -8,6 +8,7 @@ import 'package:text_extractor_app/firebase_options.dart';
 import 'package:text_extractor_app/home_screen.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
 import 'package:text_extractor_app/providers/theme_provider.dart';
+import 'package:text_extractor_app/screens/settings_screen.dart';
 import 'package:text_extractor_app/utils/themes/theme.dart';
 
 void main() async {
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
             }),
           ],
         ),
+        '/settings': (context) => const SettingsScreen(),
       },
 
     );

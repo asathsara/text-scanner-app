@@ -119,18 +119,42 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            GestureDetector(
-              onTap: () {
-                Provider.of<ThemeProvider>(
-                  context,
-                  listen: false,
-                ).toggleTheme();
-              },
-              child: const StrokeText(text: "Image to Text"),
-            ),
+            Row(
+              children: [
+                const SizedBox(height: 32),
+                GestureDetector(
+                  onTap: () {
+                    Provider.of<ThemeProvider>(
+                      context,
+                      listen: false,
+                    ).toggleTheme();
+                  },
+                  child: const StrokeText(text: "Image to Text"),
+                ),
 
-            const SizedBox(height: 32),
+                const SizedBox(height: 32),
+                // Settings Card with Icon
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    color: Theme.of(context).colorScheme.surface,
+                    child: IconButton(
+                      icon: const Icon(Icons.settings, size: 28),
+                      color: Theme.of(context).colorScheme.primary,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/settings');
+                      },
+                      tooltip: "Settings",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             // Image Upload Box
             GestureDetector(
               onTap: _pickImage,
