@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_extractor_app/components/note_action_button.dart';
 import 'package:text_extractor_app/components/note_counter_card.dart';
-import 'package:text_extractor_app/components/stroke_text.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
 import 'package:text_extractor_app/utils/constants/colors.dart';
 
@@ -89,14 +88,20 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'Text Editor',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 32),
-            StrokeText(text: "Text Editor"),
-            SizedBox(height: 32),
             TextFormField(
               controller: _titleController,
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -153,7 +158,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 onChanged: _updateCounts,
                 maxLines: null,
                 expands: true,
-                textAlignVertical: TextAlignVertical.top, 
+                textAlignVertical: TextAlignVertical.top,
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: "Enter your note here…",
