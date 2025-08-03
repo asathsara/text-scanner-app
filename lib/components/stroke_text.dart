@@ -21,8 +21,8 @@ class StrokeText extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final effectiveStrokeColor = strokeColor ?? (isDark ? MyColors.backgroundGray : MyColors.textBlue);
-    final effectiveFillColor = fillColor ?? (isDark ? MyColors.backgroundGray : MyColors.textBlue);
+    final effectiveStrokeColor = strokeColor ?? (isDark ? MyColors.backgroundGray : MyColors.black);
+    final effectiveFillColor = fillColor ?? (isDark ? MyColors.backgroundGray : MyColors.black);
 
     return Stack(
       children: [

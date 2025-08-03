@@ -37,11 +37,11 @@ class MyHomePageState extends State<MyHomePage> {
         selectedIndex: _currentPage,
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.image),
+            icon: Icon(Icons.image_outlined),
             label: 'Image to Text',
           ),
-          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.edit), label: 'Text Editor'),
+          NavigationDestination(icon: Icon(Icons.history_outlined), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.edit_outlined), label: 'Text Editor'),
         ],
       ),
     );

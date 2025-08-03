@@ -14,15 +14,21 @@ class AppThemes {
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.light),
     textTheme: GoogleFonts.interTextTheme(),
     navigationBarTheme: AppNavigationThemes.light,
-    filledButtonTheme:  AppButtonThemes.lightFilled
-  );
+    filledButtonTheme: AppButtonThemes.lightFilled,
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: MyColors.primaryColor,
+    ),
+    );
 
-  static ThemeData darkTheme = ThemeData(
+    static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.dark),
     textTheme: GoogleFonts.interTextTheme(),
     navigationBarTheme: AppNavigationThemes.dark,
-    filledButtonTheme:  AppButtonThemes.darkFilled
-  );
+    filledButtonTheme: AppButtonThemes.darkFilled,
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: MyColors.white,
+    ),
+    );
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:text_extractor_app/components/image_upload_card.dart';
 import 'package:text_extractor_app/controllers/image_text_controller.dart';
 import 'package:text_extractor_app/services/firebase_service.dart';
 import 'package:text_extractor_app/services/text_recognition_service.dart';
@@ -29,7 +30,6 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
       FirebaseService(),
       TextRecognitionService(),
     );
-    
   }
 
   @override
@@ -59,7 +59,6 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
   }
 
   Future<void> _scanText() async {
-
     // Ensure an image is selected before processing
     if (_imageFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,8 +72,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
     });
 
     try {
-
-      final file = File(_imageFile!.path);    
+      final file = File(_imageFile!.path);
 
       // Use the controller to process the image and scan text
       final note = await _controller.processImage(file);
@@ -86,10 +84,10 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
       }
 
       if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Saved to Firebase")),
-      );
-    }
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Saved to Firebase")));
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -101,12 +99,14 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
     setState(() => _isProcessing = false);
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Image to Text' , style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Image to Text',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
@@ -126,40 +126,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
           children: [
             const SizedBox(height: 16),
             // Image Upload Box
-            GestureDetector(
-              onTap: _pickImage,
-              child: Container(
-                height: 180,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey[200],
-                ),
-                child: _imageFile != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(11),
-                        child: Image.file(
-                          File(_imageFile!.path),
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_photo_alternate_outlined,
-                              size: 40,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(height: 8),
-                            Text("Tap to upload image"),
-                          ],
-                        ),
-                      ),
-              ),
-            ),
+            ImageUploadCard(imageFile: _imageFile, onTap: _pickImage),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
