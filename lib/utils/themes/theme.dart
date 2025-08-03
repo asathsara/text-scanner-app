@@ -12,7 +12,7 @@ class AppThemes {
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.light),
-    textTheme: GoogleFonts.lexendTextTheme(),
+    textTheme: GoogleFonts.interTextTheme(),
     navigationBarTheme: AppNavigationThemes.light,
     filledButtonTheme:  AppButtonThemes.lightFilled
   );
@@ -21,7 +21,7 @@ class AppThemes {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.dark),
-    textTheme: GoogleFonts.lexendTextTheme(),
+    textTheme: GoogleFonts.interTextTheme(),
     navigationBarTheme: AppNavigationThemes.dark,
     filledButtonTheme:  AppButtonThemes.darkFilled
   );
