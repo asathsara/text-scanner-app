@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.currentThemeMode,
       initialRoute: FirebaseAuth.instance.currentUser == null
           ? '/sign-in'
-          : '/profile',
+          : '/home',
       routes: {
         '/sign-in': (context) => SignInScreen(
           providers: providers,
