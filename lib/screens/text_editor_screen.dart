@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:text_extractor_app/controllers/text_editor_controller.dart';
 import 'package:text_extractor_app/components/note_action_button.dart';
 import 'package:text_extractor_app/components/note_counter_card.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
@@ -15,71 +16,47 @@ class TextEditorScreen extends StatefulWidget {
 }
 
 class _TextEditorScreenState extends State<TextEditorScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
+  late final TextEditorController controller;
 
-  int wordCount = 0;
-  int charCount = 0;
-
-  void _updateCounts(String text) {
-    setState(() {
-      charCount = text.length;
-      wordCount = text.trim().isEmpty
-          ? 0
-          : text.trim().split(RegExp(r'\s+')).length;
-    });
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditorController();
   }
 
-  void _clearText() {
-    _noteController.clear();
-    _updateCounts('');
-  }
-
-  void _copyText() {
-    Clipboard.setData(ClipboardData(text: _noteController.text));
-  }
-
-  void _pasteText() async {
-    ClipboardData? data = await Clipboard.getData('text/plain');
-    if (data != null) {
-      _noteController.text += data.text!;
-      _updateCounts(_noteController.text);
-    }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final noteProvider = Provider.of<NoteProvider>(context);
-    _titleController.text = noteProvider.title;
-    _noteController.text = noteProvider.content;
-    _updateCounts(noteProvider.content);
+    controller.titleController.text = noteProvider.title;
+    controller.noteController.text= noteProvider.content;
+    controller.updateCounts(noteProvider.content);
   }
 
-  void _shareNote() async {
-    final title = _titleController.text.trim();
-    final content = _noteController.text.trim();
-    final contentToShare = '$title\n\n$content';
+  Future<void> _handleShare() async {
 
-    if (contentToShare.isNotEmpty) {
-      final result = await SharePlus.instance.share(
-        ShareParams(
-          text: contentToShare,
-          subject: title.isEmpty ? null : title,
-        ),
+    // start sharing process
+    final result = await controller.shareNote();
+
+    // Check if the user is still mounted before showing a snackbar
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (result == ShareResultStatus.success) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text("Shared successfully!")),
       );
 
-      if (result.status == ShareResultStatus.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Shared successfully!")));
-        }
-      }
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Nothing to share")));
+    } else if ((await controller.getNoteToShare()).trim().isEmpty) {
+
+      messenger.showSnackBar(const SnackBar(content: Text("Nothing to share")));
     }
   }
 
@@ -94,7 +71,6 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
           'Text Editor',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         centerTitle: true,
       ),
       body: Padding(
@@ -103,7 +79,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
-              controller: _titleController,
+              controller: controller.titleController,
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 hintText: "Note Title",
@@ -115,9 +91,17 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                NoteCounterCard(label: "CHARACTERS", count: charCount),
+                ValueListenableBuilder<int>(
+                  valueListenable: controller.charCount,
+                  builder: (_, count, __) =>
+                      NoteCounterCard(label: "CHARACTERS", count: count),
+                ),
                 const SizedBox(width: 12),
-                NoteCounterCard(label: "WORDS", count: wordCount),
+                ValueListenableBuilder<int>(
+                  valueListenable: controller.wordCount,
+                  builder: (_, count, __) =>
+                      NoteCounterCard(label: "WORDS", count: count),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -127,35 +111,32 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    NoteActionButton(
-                      icon: Icons.copy,
-                      label: "copy",
-                      onTap: _copyText,
-                    ),
-                    NoteActionButton(
-                      icon: Icons.paste,
-                      label: "paste",
-                      onTap: _pasteText,
-                    ),
-                    NoteActionButton(
-                      icon: Icons.clear_all,
-                      label: "clear all",
-                      onTap: _clearText,
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  NoteActionButton(
+                    icon: Icons.copy,
+                    label: "copy",
+                    onTap: controller.copyText,
+                  ),
+                  NoteActionButton(
+                    icon: Icons.paste,
+                    label: "paste",
+                    onTap: controller.pasteText,
+                  ),
+                  NoteActionButton(
+                    icon: Icons.clear_all,
+                    label: "clear all",
+                    onTap: controller.clearText,
+                  ),
+                ],
               ),
             ),
-
             const SizedBox(height: 16),
             Expanded(
               child: TextField(
-                controller: _noteController,
-                onChanged: _updateCounts,
+                controller: controller.noteController,
+                onChanged: controller.updateCounts,
                 maxLines: null,
                 expands: true,
                 textAlignVertical: TextAlignVertical.top,
@@ -175,7 +156,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         backgroundColor: MyColors.cyanBlue,
-        onPressed: _shareNote,
+        onPressed: _handleShare,
         child: const Icon(Icons.share, color: Colors.white),
       ),
     );
