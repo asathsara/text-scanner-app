@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/controllers/image_text_controller.dart';
 import 'package:text_extractor_app/providers/theme_provider.dart';
+import 'package:text_extractor_app/services/firebase_service.dart';
+import 'package:text_extractor_app/services/text_recognition_service.dart';
 
 class ImageTextScreen extends StatefulWidget {
   const ImageTextScreen({super.key});
@@ -18,13 +18,25 @@ class ImageTextScreen extends StatefulWidget {
 
 class _ImageTextScreenState extends State<ImageTextScreen> {
   XFile? _imageFile;
-  final TextRecognizer _textRecognizer = TextRecognizer();
-  final TextEditingController _textController = TextEditingController();
   bool _isProcessing = false;
+
+  final TextEditingController _textController = TextEditingController();
+  late final ImageTextController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the ImageTextController with Firebase and Text Recognition services
+    _controller = ImageTextController(
+      FirebaseService(),
+      TextRecognitionService(),
+    );
+    
+  }
 
   @override
   void dispose() {
-    _textRecognizer.close();
     _textController.dispose();
     super.dispose();
   }
@@ -49,7 +61,9 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
     }
   }
 
-  Future<void> _extractText() async {
+  Future<void> _scanText() async {
+
+    // Ensure an image is selected before processing
     if (_imageFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select an image first.')),
@@ -62,55 +76,35 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
     });
 
     try {
-      final inputImage = InputImage.fromFilePath(_imageFile!.path);
-      final RecognizedText recognizedText = await _textRecognizer.processImage(
-        inputImage,
-      );
 
-      final extractedText = recognizedText.text;
-      _textController.text = extractedText;
+      final file = File(_imageFile!.path);    
 
-      if (extractedText.trim().isNotEmpty) {
-        await _saveToFirebase(extractedText);
+      // Use the controller to process the image and scan text
+      final note = await _controller.processImage(file);
+
+      _textController.text = note.text;
+
+      if (note.text.trim().isNotEmpty) {
+        await _controller.saveToFirebase(note);
       }
+
+      if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Saved to Firebase")),
+      );
+    }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Failed to extract text: $e')));
+        ).showSnackBar(SnackBar(content: Text('Failed to scan text: $e')));
       }
     }
 
     setState(() => _isProcessing = false);
   }
 
-  Future<void> _saveToFirebase(String text) async {
-    final now = DateTime.now();
-    final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(now);
-    final words = text.split(RegExp(r'\s+'));
-    final title = words.take(3).join(' '); // First 3 words as title
-
-    try {
-      await FirebaseFirestore.instance.collection('extracted_texts').add({
-        'title': title,
-        'date': formattedDate,
-        'text': text,
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Saved to Firebase")));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Failed to save: $e")));
-      }
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,7 +191,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
               child: FilledButton(
                 onPressed: _isProcessing || _imageFile == null
                     ? null
-                    : _extractText,
+                    : _scanText,
                 child: _isProcessing
                     ? const SizedBox(
                         height: 24,
