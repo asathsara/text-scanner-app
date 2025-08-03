@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:text_extractor_app/services/history_service.dart';
+import 'package:text_extractor_app/services/firebase_service.dart';
 
 class HistoryController {
-  final HistoryService _service;
+  final FirebaseService _service;
   final FirebaseAuth _auth;
 
-  HistoryController({HistoryService? service, FirebaseAuth? auth})
-      : _service = service ?? HistoryService(),
+  HistoryController({FirebaseService? service, FirebaseAuth? auth})
+      : _service = service ?? FirebaseService(),
         _auth = auth ?? FirebaseAuth.instance;
 
   String? get currentUserId => _auth.currentUser?.uid;
@@ -19,7 +19,7 @@ class HistoryController {
     if (userId == null) return null;
 
     // Fetch the history stream for the authenticated user
-    return _service.getUserHistoryStream(userId);
+    return _service.getUserHistoryStream();
   }
 
   Future<bool> deleteHistoryItem(String docId) async {
@@ -27,7 +27,7 @@ class HistoryController {
     if (userId == null) return false;
 
     try {
-      await _service.deleteHistoryItem(userId, docId);
+      await _service.deleteNote(docId);
       return true;
     } catch (_) {
       return false;
