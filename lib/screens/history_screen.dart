@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import 'package:text_extractor_app/components/history_item_card.dart';
 import 'package:text_extractor_app/components/stroke_text.dart';
+import 'package:text_extractor_app/controllers/history_controller.dart';
 import 'package:text_extractor_app/home_screen.dart';
 import 'package:text_extractor_app/providers/note_provider.dart';
+
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -14,42 +17,70 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-void _confirmAndDelete(BuildContext context, String docId) async {
-  final confirm = await showDialog<bool>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Delete this note?'),
-      content: const Text('This action cannot be undone.'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(ctx).pop(false),
-          child: Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(ctx).pop(true),
-          child: Text('Delete'),
-        ),
-      ],
-    ),
-  );
+class _HistoryScreenState extends State<HistoryScreen> {
+  late final HistoryController _controller;
 
-  if (confirm == true) {
-    FirebaseFirestore.instance
-        .collection('extracted_texts')
-        .doc(docId)
-        .delete();
+  @override
+  void initState() {
+    super.initState();
+    _controller = HistoryController();
+  }
 
-    if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Note deleted')));
+  Future<void> _confirmAndDelete(BuildContext context, String docId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete this note?'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final success = await _controller.deleteHistoryItem(docId);
+      if (success) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Note deleted')),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete note')),
+          );
+        }
+      }
     }
   }
-}
 
-class _HistoryScreenState extends State<HistoryScreen> {
+  DateTime _parseDate(String dateStr) {
+    try {
+      return DateFormat('yyyy-MM-dd HH:mm').parse(dateStr);
+    } catch (_) {
+      return DateTime.now();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    // get the history stream from the controller
+    final stream = _controller.getHistoryStream();
+
+    if (stream == null) {
+      return const Center(child: Text("Oops! No history found."));
+    }
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -61,10 +92,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             const SizedBox(height: 24),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('extracted_texts')
-                    .orderBy('date', descending: true)
-                    .snapshots(),
+                stream: stream,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -79,7 +107,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   return ListView.builder(
                     itemCount: docs.length,
                     itemBuilder: (context, index) {
-                      final data = docs[index].data() as Map<String, dynamic>;
+                      final data = docs[index].data() as Map<String, dynamic>?;
+
+                      if (data == null) return const SizedBox();
 
                       return GestureDetector(
                         onTap: () {
@@ -88,13 +118,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             listen: false,
                           ).setNote(data['title'], data['text']);
 
-                          // Switch to Text Editor tab (index 2)
-                          final homePageState = context
-                              .findAncestorStateOfType<MyHomePageState>();
+                          final homePageState =
+                              context.findAncestorStateOfType<MyHomePageState>();
                           homePageState?.navigateToPage(2);
                         },
                         onLongPress: () =>
-                            _confirmAndDelete(context, docs[index].id),
+                            _confirmAndDelete(context, docs[index].id), 
                         child: HistoryItemCard(
                           title: data['title'] ?? 'No Title',
                           content: data['text'] ?? '',
@@ -110,14 +139,5 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
     );
-  }
-
-  // Convert string date to DateTime
-  DateTime _parseDate(String dateStr) {
-    try {
-      return DateFormat('yyyy-MM-dd HH:mm').parse(dateStr);
-    } catch (e) {
-      return DateTime.now();
-    }
   }
 }
