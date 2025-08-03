@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:text_extractor_app/providers/theme_provider.dart';
 import 'package:text_extractor_app/services/firebase_service.dart';
@@ -22,8 +23,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+
     setState(() {
-      _version = "1.1.0";
+      _version = info.version;
     });
   }
 
@@ -41,9 +44,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () => Navigator.pop(ctx, false),
           ),
           FilledButton(
-            child: const Text("Delete"),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
+            child: const Text("Delete"),
           ),
         ],
       ),
@@ -51,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (confirmed == true) {
       try {
         // Call the Firebase service to delete all notes
-        await FirebaseService().deleteAllNotes();  
+        await FirebaseService().deleteAllNotes();
       } catch (e) {
         return;
       }
