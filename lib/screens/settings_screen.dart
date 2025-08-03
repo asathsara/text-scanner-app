@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:text_extractor_app/providers/note_provider.dart';
 import 'package:text_extractor_app/providers/theme_provider.dart';
+import 'package:text_extractor_app/services/firebase_service.dart';
 import 'package:text_extractor_app/utils/constants/colors.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -49,7 +49,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
     if (confirmed == true) {
-      Provider.of<NoteProvider>(context, listen: false).clearNote();
+      try {
+        // Call the Firebase service to delete all notes
+        await FirebaseService().deleteAllNotes();  
+      } catch (e) {
+        return;
+      }
       if (mounted) {
         ScaffoldMessenger.of(
           context,
