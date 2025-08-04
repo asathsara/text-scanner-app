@@ -11,7 +11,7 @@ class AppThemes {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.light),
+    colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primaryColor, brightness: Brightness.light,outline: MyColors.lightGray,),
     textTheme: GoogleFonts.interTextTheme(),
     navigationBarTheme: AppNavigationThemes.light,
     filledButtonTheme: AppButtonThemes.lightFilled,

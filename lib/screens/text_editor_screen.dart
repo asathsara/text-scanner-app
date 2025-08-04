@@ -82,9 +82,6 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 hintText: "Note Title",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
               ),
             ),
             const SizedBox(height: 16),
