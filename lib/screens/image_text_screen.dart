@@ -101,6 +101,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -153,6 +154,7 @@ class _ImageTextScreenState extends State<ImageTextScreen> {
                 maxLines: null,
                 expands: true,
                 textAlignVertical: TextAlignVertical.top,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: "Extracted Text",
                   border: OutlineInputBorder(
