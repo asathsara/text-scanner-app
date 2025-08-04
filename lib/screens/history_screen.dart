@@ -73,10 +73,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     // get the history stream from the controller
     final stream = _controller.getHistoryStream();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (stream == null) {
       return const Center(child: Text("Oops! No history found."));
     }
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -102,7 +105,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text("No history yet."));
+                    return Center(child: Text("No history yet.", style: TextStyle(color: isDark ? Colors.white : Colors.black)));
                   }
 
                   final docs = snapshot.data!.docs;
