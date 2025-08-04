@@ -1,6 +1,6 @@
 # Text Scanner App
 
-A powerful and user-friendly Flutter application that scans text from images using advanced Optical Character Recognition (OCR) technology. Effortlessly scan, copy, edit, and share text from photos, documents, receipts, and more—all from your mobile device.
+A  Flutter application that scans text from images using advanced Optical Character Recognition (OCR) technology. Effortlessly scan, copy, edit, and share text from photos, documents, receipts, and more—all from your mobile device.
 
 ---
 
